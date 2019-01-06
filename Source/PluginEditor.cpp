@@ -19,7 +19,7 @@ SimpleDelayAudioProcessorEditor::SimpleDelayAudioProcessorEditor (SimpleDelayAud
     // editor's size to whatever you need it to be.
     setSize (600, 400);
     
-    //Delay Time
+    //Delay Dial
     numDelayDial.setSliderStyle(Slider::RotaryVerticalDrag);
     numDelayDial.setRange(20.0, 1000.0, 1);
     numDelayDial.setValue(500.0);
@@ -33,6 +33,21 @@ SimpleDelayAudioProcessorEditor::SimpleDelayAudioProcessorEditor (SimpleDelayAud
     numDelayLabel.setText("Cutoff", dontSendNotification);
     numDelayLabel.setJustificationType(Justification::centred);
     numDelayValue = new AudioProcessorValueTreeState::SliderAttachment(valueStateTree, "delayValue", numDelayDial);
+    
+    //Feedback Dial
+    feedbackDial.setSliderStyle(Slider::RotaryVerticalDrag);
+    feedbackDial.setRange(0.1, 0.8, 0.1);
+    feedbackDial.setValue(0.6);
+    feedbackDial.setNumDecimalPlacesToDisplay(1);
+    feedbackDial.setTextBoxStyle(Slider::TextBoxBelow, false, 100, 50);
+    feedbackDial.setTextValueSuffix(" Gain");
+    addAndMakeVisible(feedbackDial);
+    
+    //Feedback Label
+    addAndMakeVisible(numDelayLabel);
+    feedbackLabel.setText("Cutoff", dontSendNotification);
+    feedbackLabel.setJustificationType(Justification::centred);
+    feedbackValue = new AudioProcessorValueTreeState::SliderAttachment(valueStateTree, "feedbackValue", feedbackDial);
     
 }
 
@@ -59,5 +74,6 @@ void SimpleDelayAudioProcessorEditor::resized()
     const int sliderHeight = getHeight() - labelHeight;
     
     
-    numDelayDial.setBounds(20, 20, sliderWidth, sliderHeight);
+    numDelayDial.setBounds(0, 0, sliderWidth, sliderHeight);
+    feedbackDial.setBounds(sliderWidth, 0, sliderWidth, sliderHeight);
 }

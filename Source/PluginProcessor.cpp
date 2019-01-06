@@ -26,6 +26,8 @@ SimpleDelayAudioProcessor::SimpleDelayAudioProcessor()
 {
     tree.createAndAddParameter("delayValue", "DelayValue", String(), NormalisableRange<float>(20.0f, 1000.0f), 500.0f, nullptr, nullptr);
     
+    tree.createAndAddParameter("feedbackValue", "FeedbackValue", String(), NormalisableRange<float>(0.1f, 0.8f), 0.1f, nullptr, nullptr);
+    
     tree.state = ValueTree(Identifier("DelayState"));
 }
 
@@ -207,18 +209,20 @@ void SimpleDelayAudioProcessor::getFromDelayBuffer (AudioBuffer<float>& buffer, 
 
 void SimpleDelayAudioProcessor::feedbackDelay (int channel, const int bufferLength, const int delayBufferLength, float* dryBuffer)
 {
+    const float feedbackGain = *tree.getRawParameterValue("feedbackValue");
+    
     if (delayBufferLength > bufferLength + mWritePosition)
     {
         //Copy Main Buffer to Delayed Signal
-        mDelayBuffer.addFromWithRamp(channel, mWritePosition, dryBuffer, bufferLength, 0.8, 0.8);
+        mDelayBuffer.addFromWithRamp(channel, mWritePosition, dryBuffer, bufferLength, feedbackGain, feedbackGain);
     }
     
     else
     {
         const int bufferRemaining = delayBufferLength - mWritePosition;
         
-        mDelayBuffer.addFromWithRamp(channel, bufferRemaining, dryBuffer, bufferRemaining, 0.8, 0.8);
-        mDelayBuffer.addFromWithRamp(channel, 0, dryBuffer, bufferLength - bufferRemaining, 0.8, 0.8);
+        mDelayBuffer.addFromWithRamp(channel, bufferRemaining, dryBuffer, bufferRemaining, feedbackGain, feedbackGain);
+        mDelayBuffer.addFromWithRamp(channel, 0, dryBuffer, bufferLength - bufferRemaining, feedbackGain, feedbackGain);
     }
 }
 
