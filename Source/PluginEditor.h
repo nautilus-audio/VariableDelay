@@ -33,6 +33,22 @@ private:
     Label numDelayLabel;
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> numDelayValue;
     
+    Slider feedbackDial;
+    Label feedbackLabel;
+    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> feedbackValue;
+    
+    Slider roomSizeSlider;
+    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> roomSizeAttachment;
+    
+    Slider roomWidthSlider;
+    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> roomWidthAttachment;
+    
+    Slider dampingSlider;
+    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> dampingAttachment;
+    
+    Slider dryWetSlider;
+    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> dryWetAttachment;
+    
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     SimpleDelayAudioProcessor& processor;

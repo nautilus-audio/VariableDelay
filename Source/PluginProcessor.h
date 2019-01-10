@@ -59,12 +59,15 @@ public:
     void getFromDelayBuffer (AudioBuffer<float>& buffer, int channel, const int bufferLength, const int delayBufferLength, const float* bufferData, const float* delayBufferData);
     void feedbackDelay (int channel, const int bufferLength, const int delayBufferLength, float* dryBuffer);
     
-    AudioProcessorValueTreeState tree;
+    AudioProcessorValueTreeState tree, params;
     
 private:
     AudioBuffer<float> mDelayBuffer;
     int mWritePosition {0};
     int mSampleRate {44100};
+    
+    Reverb cavern;
+    Reverb::Parameters cavernParameters;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleDelayAudioProcessor)
 };

@@ -21,12 +21,22 @@ SimpleDelayAudioProcessor::SimpleDelayAudioProcessor()
                       #endif
                        .withOutput ("Output", AudioChannelSet::stereo(), true)
                      #endif
-                       ), tree(*this, nullptr)
+                       ), tree(*this, nullptr), params(*this, nullptr)
 #endif
 {
+    //initialize dealy parameters
     tree.createAndAddParameter("delayValue", "DelayValue", String(), NormalisableRange<float>(20.0f, 1000.0f), 500.0f, nullptr, nullptr);
+    tree.createAndAddParameter("feedbackValue", "FeedbackValue", String(), NormalisableRange<float>(0.1f, 0.8f), 0.1f, nullptr, nullptr);
     
+    //initialize reverb parameters
+    params.createAndAddParameter("dryWet", "DryWet", String(), NormalisableRange<float> (0.0f, 1.0f), 0.5f, nullptr, nullptr);
+    params.createAndAddParameter("damping", "Damping", String(), NormalisableRange<float> (0.0f, 1.0f), 0.1f, nullptr, nullptr);
+    params.createAndAddParameter("roomSize", "RoomSize", String(), NormalisableRange<float> (0.0f, 1.0f), 0.4f, nullptr, nullptr);
+    params.createAndAddParameter("roomWidth", "RoomWidth", String(), NormalisableRange<float> (0.0f, 1.0f), 0.4f, nullptr, nullptr);
+    
+    //Set Plugin State
     tree.state = ValueTree(Identifier("DelayState"));
+    params.state = ValueTree(Identifier("ReverbState"));
 }
 
 SimpleDelayAudioProcessor::~SimpleDelayAudioProcessor()
@@ -145,9 +155,35 @@ void SimpleDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
+    //Get current values for reverb parameters
+    const float lastDryWet = *params.getRawParameterValue("dryWet");
+    const float lastRoomSize = *params.getRawParameterValue("roomSize");
+    const float lastDamping = *params.getRawParameterValue("damping");
+    const float lastWidth = *params.getRawParameterValue("roomWidth");
+    
+    //Eliminate Feedback Loop
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
+    //Find number of channels
+    const auto numChannels = jmin(totalNumInputChannels, totalNumOutputChannels);
+    
+    //Update Parameters, Merge Dry/Wet Levels
+    cavernParameters.dryLevel = 1 - lastDryWet;
+    cavernParameters.wetLevel = lastDryWet;
+    cavernParameters.roomSize = lastRoomSize;
+    cavernParameters.damping = lastDamping;
+    cavernParameters.width = lastWidth;
+    
+    //Set Reverb Parameters
+    cavern.setParameters(cavernParameters);
+    
+    //Process Mono/Stereo
+    if (numChannels == 1)
+        cavern.processMono(buffer.getWritePointer(0), buffer.getNumSamples());
+    else if (numChannels == 2)
+        cavern.processStereo(buffer.getWritePointer(0), buffer.getWritePointer(1), buffer.getNumSamples());
+    
     //Get Buffer Lengths
     const int bufferLength = buffer.getNumSamples();
     const int delayBufferLength = mDelayBuffer.getNumSamples();
@@ -207,18 +243,20 @@ void SimpleDelayAudioProcessor::getFromDelayBuffer (AudioBuffer<float>& buffer, 
 
 void SimpleDelayAudioProcessor::feedbackDelay (int channel, const int bufferLength, const int delayBufferLength, float* dryBuffer)
 {
+    const float feedbackGain = *tree.getRawParameterValue("feedbackValue");
+    
     if (delayBufferLength > bufferLength + mWritePosition)
     {
         //Copy Main Buffer to Delayed Signal
-        mDelayBuffer.addFromWithRamp(channel, mWritePosition, dryBuffer, bufferLength, 0.8, 0.8);
+        mDelayBuffer.addFromWithRamp(channel, mWritePosition, dryBuffer, bufferLength, feedbackGain, feedbackGain);
     }
     
     else
     {
         const int bufferRemaining = delayBufferLength - mWritePosition;
         
-        mDelayBuffer.addFromWithRamp(channel, bufferRemaining, dryBuffer, bufferRemaining, 0.8, 0.8);
-        mDelayBuffer.addFromWithRamp(channel, 0, dryBuffer, bufferLength - bufferRemaining, 0.8, 0.8);
+        mDelayBuffer.addFromWithRamp(channel, bufferRemaining, dryBuffer, bufferRemaining, feedbackGain, feedbackGain);
+        mDelayBuffer.addFromWithRamp(channel, 0, dryBuffer, bufferLength - bufferRemaining, feedbackGain, feedbackGain);
     }
 }
 
