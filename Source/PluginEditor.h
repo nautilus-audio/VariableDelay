@@ -36,6 +36,7 @@ private:
     Slider feedbackDial;
     Label feedbackLabel;
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> feedbackValue;
+<<<<<<< HEAD
     
     Slider roomSizeSlider;
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> roomSizeAttachment;
@@ -48,6 +49,8 @@ private:
     
     Slider dryWetSlider;
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> dryWetAttachment;
+=======
+>>>>>>> origin/master
     
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.

@@ -28,6 +28,7 @@ SimpleDelayAudioProcessor::SimpleDelayAudioProcessor()
     tree.createAndAddParameter("delayValue", "DelayValue", String(), NormalisableRange<float>(20.0f, 1000.0f), 500.0f, nullptr, nullptr);
     tree.createAndAddParameter("feedbackValue", "FeedbackValue", String(), NormalisableRange<float>(0.1f, 0.8f), 0.1f, nullptr, nullptr);
     
+<<<<<<< HEAD
     //initialize reverb parameters
     params.createAndAddParameter("dryWet", "DryWet", String(), NormalisableRange<float> (0.0f, 1.0f), 0.5f, nullptr, nullptr);
     params.createAndAddParameter("damping", "Damping", String(), NormalisableRange<float> (0.0f, 1.0f), 0.1f, nullptr, nullptr);
@@ -37,6 +38,11 @@ SimpleDelayAudioProcessor::SimpleDelayAudioProcessor()
     //Set Plugin State
     tree.state = ValueTree(Identifier("DelayState"));
     params.state = ValueTree(Identifier("ReverbState"));
+=======
+    tree.createAndAddParameter("feedbackValue", "FeedbackValue", String(), NormalisableRange<float>(0.1f, 0.8f), 0.1f, nullptr, nullptr);
+    
+    tree.state = ValueTree(Identifier("DelayState"));
+>>>>>>> origin/master
 }
 
 SimpleDelayAudioProcessor::~SimpleDelayAudioProcessor()
