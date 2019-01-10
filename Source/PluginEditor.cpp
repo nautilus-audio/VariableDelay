@@ -40,7 +40,6 @@ SimpleDelayAudioProcessorEditor::SimpleDelayAudioProcessorEditor (SimpleDelayAud
     feedbackDial.setValue(0.6);
     feedbackDial.setNumDecimalPlacesToDisplay(1);
     feedbackDial.setTextBoxStyle(Slider::TextBoxBelow, false, 100, 50);
-<<<<<<< HEAD
     feedbackDial.setTextValueSuffix(" Feedback Amount");
     addAndMakeVisible(feedbackDial);
     
@@ -73,7 +72,6 @@ SimpleDelayAudioProcessorEditor::SimpleDelayAudioProcessorEditor (SimpleDelayAud
     roomWidthSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 100, 20);
     roomWidthSlider.setRange(0, 1, 0.01);
     roomWidthAttachment = new AudioProcessorValueTreeState::SliderAttachment(valueStateTree, "roomWidth", roomWidthSlider);
-=======
     feedbackDial.setTextValueSuffix(" Gain");
     addAndMakeVisible(feedbackDial);
     
@@ -82,7 +80,6 @@ SimpleDelayAudioProcessorEditor::SimpleDelayAudioProcessorEditor (SimpleDelayAud
     feedbackLabel.setText("Cutoff", dontSendNotification);
     feedbackLabel.setJustificationType(Justification::centred);
     feedbackValue = new AudioProcessorValueTreeState::SliderAttachment(valueStateTree, "feedbackValue", feedbackDial);
->>>>>>> origin/master
     
 }
 
@@ -110,13 +107,10 @@ void SimpleDelayAudioProcessorEditor::resized()
     
     
     numDelayDial.setBounds(0, 0, sliderWidth, sliderHeight);
-<<<<<<< HEAD
     feedbackDial.setBounds(sliderWidth, 0, sliderWidth, sliderHeight);
     dryWetSlider.setBounds(sliderWidth * 2, 0, sliderWidth, sliderHeight);
     roomSizeSlider.setBounds(sliderWidth * 3, 0, sliderWidth, sliderHeight);
     dampingSlider.setBounds(sliderWidth * 4, 0, sliderWidth, sliderHeight);
     roomWidthSlider.setBounds(sliderWidth * 5, 0, sliderWidth, sliderHeight);
-=======
     feedbackDial.setBounds(sliderWidth, 0, sliderWidth, sliderHeight);
->>>>>>> origin/master
 }
