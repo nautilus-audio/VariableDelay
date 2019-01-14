@@ -96,6 +96,11 @@ void SimpleDelayAudioProcessorEditor::paint (Graphics& g)
     g.setColour (Colours::white);
     g.setFont (15.0f);
     g.drawFittedText ("Variable Delay Line Stereo Reverb", getLocalBounds(), Justification::centred, 1);
+    
+    //Add and Draw Background Image
+    Image background = ImageCache::getFromMemory (Images::cloudyBlue_jpg, Images::cloudyBlue_jpgSize);
+    g.drawImageWithin (background, 0, 0, 600, 400, RectanglePlacement::fillDestination, false);
+    
 }
 
 void SimpleDelayAudioProcessorEditor::resized()

@@ -391,6 +391,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Images.cpp">
+      <Filter>VariableDelay\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp">
       <Filter>VariableDelay\Source</Filter>
     </ClCompile>
@@ -2295,6 +2298,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Images.h">
+      <Filter>VariableDelay\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\PluginProcessor.h">
       <Filter>VariableDelay\Source</Filter>
     </ClInclude>

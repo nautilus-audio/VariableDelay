@@ -3,6 +3,8 @@
 <JUCERPROJECT id="OvvQkS" name="VariableDelay" projectType="audioplug" jucerVersion="5.3.2">
   <MAINGROUP id="F5mlYs" name="VariableDelay">
     <GROUP id="{C0D80482-CCE0-E37F-CA37-3E424B188125}" name="Source">
+      <FILE id="q9NFX4" name="Images.cpp" compile="1" resource="0" file="Source/Images.cpp"/>
+      <FILE id="RNZ9KX" name="Images.h" compile="0" resource="0" file="Source/Images.h"/>
       <FILE id="FUuVq0" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="bcwXca" name="PluginProcessor.h" compile="0" resource="0"

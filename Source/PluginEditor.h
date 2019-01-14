@@ -12,6 +12,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
+#include "Images.h"
 
 //==============================================================================
 /**
@@ -48,6 +49,8 @@ private:
     
     Slider dryWetSlider;
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> dryWetAttachment;
+    
+    Image backgroundImage;
     
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
