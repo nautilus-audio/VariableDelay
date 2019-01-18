@@ -59,13 +59,16 @@ public:
     void getFromDelayBuffer (AudioBuffer<float>& buffer, int channel, const int bufferLength, const int delayBufferLength, const float* bufferData, const float* delayBufferData);
     void feedbackDelay (int channel, const int bufferLength, const int delayBufferLength, float* dryBuffer);
     
+    //Init Value Trees
     AudioProcessorValueTreeState tree, params;
     
 private:
+    //Init Delay Buffer, Write Position, Sample Rate
     AudioBuffer<float> mDelayBuffer;
     int mWritePosition {0};
     int mSampleRate {44100};
     
+    //Init Reverb, Parameters
     Reverb cavern;
     Reverb::Parameters cavernParameters;
     //==============================================================================

@@ -21,7 +21,7 @@ SimpleDelayAudioProcessor::SimpleDelayAudioProcessor()
                       #endif
                        .withOutput ("Output", AudioChannelSet::stereo(), true)
                      #endif
-                       ), tree(*this, nullptr), params(*this, nullptr)
+                       ), tree(*this, nullptr), params(*this, nullptr)  //Add Trees
 #endif
 {
     //initialize dealy parameters
@@ -111,11 +111,11 @@ void SimpleDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     //Find number of channels
     const int numInputChannels = getTotalNumInputChannels();
     
-    //Set Delay Buffer to 2 Seconds
+    //Find Delay Buffer Size
     const int delayBufferSize = 2 * (sampleRate + samplesPerBlock);
     mSampleRate = sampleRate;
     
-    //Update Buffer
+    //Update Delay Buffer
     mDelayBuffer.setSize(numInputChannels, delayBufferSize);
 }
 
@@ -195,11 +195,13 @@ void SimpleDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
         const float* delayBufferData = mDelayBuffer.getReadPointer(channel);
         float* dryBuffer = buffer.getWritePointer(channel);
         
+        //Call Functions
         fillDelayBuffer(channel, bufferLength, delayBufferLength, bufferData, delayBufferData);
         getFromDelayBuffer(buffer, channel, bufferLength, delayBufferLength, bufferData, delayBufferData);
         feedbackDelay(channel, bufferLength, delayBufferLength, dryBuffer);
     }
     
+    //Update write position
     mWritePosition += bufferLength;
     mWritePosition %= delayBufferLength;
 }
@@ -208,7 +210,7 @@ void SimpleDelayAudioProcessor::fillDelayBuffer (int channel, const int bufferLe
 {
     const float gain = 0.3;
     
-    //Copy Data From Main Buffer to Delay Buffer
+    //Write Data From Main Buffer to Delay Buffer
     if (delayBufferLength > bufferLength + mWritePosition)
     {
         mDelayBuffer.copyFromWithRamp(channel, mWritePosition, bufferData, bufferLength, gain, gain);
@@ -223,11 +225,13 @@ void SimpleDelayAudioProcessor::fillDelayBuffer (int channel, const int bufferLe
 
 void SimpleDelayAudioProcessor::getFromDelayBuffer (AudioBuffer<float>& buffer, int channel, const int bufferLength, const int delayBufferLength, const float* bufferData, const float* delayBufferData)
 {
-    //int delayTime = 500;
+    //Get delay time from ValueTree
     int delayTime = *tree.getRawParameterValue("delayValue");
     
+    //Initialize Read Position
     const int readPosition = static_cast<int> (delayBufferLength + mWritePosition - (mSampleRate * delayTime / 1000)) % delayBufferLength;
     
+    //Read data from Main Buffer to Delay Buffer
     if (delayBufferLength > bufferLength + readPosition)
     {
         buffer.copyFrom(channel, 0, delayBufferData + readPosition, bufferLength);
@@ -243,11 +247,12 @@ void SimpleDelayAudioProcessor::getFromDelayBuffer (AudioBuffer<float>& buffer, 
 
 void SimpleDelayAudioProcessor::feedbackDelay (int channel, const int bufferLength, const int delayBufferLength, float* dryBuffer)
 {
+    //Get feedback value from ValueTree
     const float feedbackGain = *tree.getRawParameterValue("feedbackValue");
     
+    //Copy Main Buffer to Delayed Signal
     if (delayBufferLength > bufferLength + mWritePosition)
     {
-        //Copy Main Buffer to Delayed Signal
         mDelayBuffer.addFromWithRamp(channel, mWritePosition, dryBuffer, bufferLength, feedbackGain, feedbackGain);
     }
     

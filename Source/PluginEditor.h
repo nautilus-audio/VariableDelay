@@ -39,15 +39,19 @@ private:
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> feedbackValue;
     
     Slider roomSizeSlider;
+    Label roomSizeLabel;
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> roomSizeAttachment;
     
     Slider roomWidthSlider;
+    Label roomWidthLabel;
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> roomWidthAttachment;
     
     Slider dampingSlider;
+    Label dampingLabel;
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> dampingAttachment;
     
     Slider dryWetSlider;
+    Label dryWetLabel;
     ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> dryWetAttachment;
     
     Image backgroundImage;
