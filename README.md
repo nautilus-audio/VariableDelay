@@ -6,19 +6,11 @@ Features 6 controls:
 
 Delay:
 
-Delay Time in ms
-
-Feedback gain for delay
+Delay Time in ms, Feedback gain for delay
 
 Reverb:
 
-Dry/Wet
-
-Room Size
-
-Damping
-
-Room Width
+Dry/Wet, Room Size, Damping, Room Width
 
 
 ![alt text](https://github.com/imABEING/VariableDelay/blob/master/Images/Cavern3.2.png)
