@@ -1,4 +1,4 @@
-# VariableDelay
-A Variable-Delay Line Stereo Reverb Plugin made with the JUCE Framework
+# Variable Delay Stereo Reverb
+A Variable-Delay Line Stereo Reverb Plugin made with the JUCE Framework, to re-create the "reverbsc" opcode in Csound.  This is the third installation in the Cavern plugin series.
 
 ![alt text](https://github.com/imABEING/VariableDelay/blob/master/Images/Cavern3.2.png)
