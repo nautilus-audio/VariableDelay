@@ -5,13 +5,19 @@ A Variable-Delay Line Stereo Reverb Plugin made with the JUCE Framework, to re-c
 Features 6 controls:
 
 Delay:
-Delay Time in ms 
+
+Delay Time in ms
+
 Feedback gain for delay
 
 Reverb:
+
 Dry/Wet
+
 Room Size
+
 Damping
+
 Room Width
 
 
