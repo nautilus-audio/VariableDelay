@@ -60,7 +60,7 @@ public:
     void feedbackDelay (int channel, const int bufferLength, const int delayBufferLength, float* dryBuffer);
     
     //Init Value Trees
-    AudioProcessorValueTreeState tree, params;
+    AudioProcessorValueTreeState tree;
     
 private:
     //Init Delay Buffer, Write Position, Sample Rate

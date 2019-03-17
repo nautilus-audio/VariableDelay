@@ -21,22 +21,28 @@ SimpleDelayAudioProcessor::SimpleDelayAudioProcessor()
                       #endif
                        .withOutput ("Output", AudioChannelSet::stereo(), true)
                      #endif
-                       ), tree(*this, nullptr), params(*this, nullptr)  //Add Trees
+                       ), tree(*this, nullptr)  //Add Trees
 #endif
 {
-    //initialize dealy parameters
-    tree.createAndAddParameter("delayValue", "DelayValue", String(), NormalisableRange<float>(20.0f, 1000.0f), 500.0f, nullptr, nullptr);
-    tree.createAndAddParameter("feedbackValue", "FeedbackValue", String(), NormalisableRange<float>(0.1f, 0.8f), 0.1f, nullptr, nullptr);
+    //initialize delay parameters
+    using delayValue = AudioProcessorValueTreeState::Parameter;
+    tree.createAndAddParameter(std::make_unique<delayValue> ("delayValue", "DelayValue", String(), NormalisableRange<float>(20.0f, 1000.0f), 500.0f, nullptr, nullptr));
+    using feedbackValue = AudioProcessorValueTreeState::Parameter;
+    tree.createAndAddParameter(std::make_unique<feedbackValue> ("feedbackValue", "FeedbackValue", String(), NormalisableRange<float>(0.1f, 0.8f), 0.1f, nullptr, nullptr));
     
     //initialize reverb parameters
-    params.createAndAddParameter("dryWet", "DryWet", String(), NormalisableRange<float> (0.0f, 1.0f), 0.5f, nullptr, nullptr);
-    params.createAndAddParameter("damping", "Damping", String(), NormalisableRange<float> (0.0f, 1.0f), 0.1f, nullptr, nullptr);
-    params.createAndAddParameter("roomSize", "RoomSize", String(), NormalisableRange<float> (0.0f, 1.0f), 0.4f, nullptr, nullptr);
-    params.createAndAddParameter("roomWidth", "RoomWidth", String(), NormalisableRange<float> (0.0f, 1.0f), 0.4f, nullptr, nullptr);
+    using dryWet = AudioProcessorValueTreeState::Parameter;
+    tree.createAndAddParameter(std::make_unique<dryWet> ("dryWet", "DryWet", String(), NormalisableRange<float> (0.0f, 1.0f), 0.5f, nullptr, nullptr));
+    using damping = AudioProcessorValueTreeState::Parameter;
+    tree.createAndAddParameter(std::make_unique<damping> ("damping", "Damping", String(), NormalisableRange<float> (0.0f, 1.0f), 0.1f, nullptr, nullptr));
+    using roomSize = AudioProcessorValueTreeState::Parameter;
+    tree.createAndAddParameter(std::make_unique<roomSize> ("roomSize", "RoomSize", String(), NormalisableRange<float> (0.0f, 1.0f), 0.4f, nullptr, nullptr));
+    using roomWidth = AudioProcessorValueTreeState::Parameter;
+    tree.createAndAddParameter(std::make_unique<roomWidth> ("roomWidth", "RoomWidth", String(), NormalisableRange<float> (0.0f, 1.0f), 0.4f, nullptr, nullptr));
     
     //Set Plugin State
     tree.state = ValueTree(Identifier("DelayState"));
-    params.state = ValueTree(Identifier("ReverbState"));
+    //params.state = ValueTree(Identifier("ReverbState"));
 }
 
 SimpleDelayAudioProcessor::~SimpleDelayAudioProcessor()
@@ -117,6 +123,9 @@ void SimpleDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     
     //Update Delay Buffer
     mDelayBuffer.setSize(numInputChannels, delayBufferSize);
+    
+    //Set sample rate for reverb
+    cavern.setSampleRate(sampleRate);
 }
 
 void SimpleDelayAudioProcessor::releaseResources()
@@ -156,10 +165,10 @@ void SimpleDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBu
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
     //Get current values for reverb parameters
-    const float lastDryWet = *params.getRawParameterValue("dryWet");
-    const float lastRoomSize = *params.getRawParameterValue("roomSize");
-    const float lastDamping = *params.getRawParameterValue("damping");
-    const float lastWidth = *params.getRawParameterValue("roomWidth");
+    const float lastDryWet = *tree.getRawParameterValue("dryWet");
+    const float lastRoomSize = *tree.getRawParameterValue("roomSize");
+    const float lastDamping = *tree.getRawParameterValue("damping");
+    const float lastWidth = *tree.getRawParameterValue("roomWidth");
     
     //Eliminate Feedback Loop
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
@@ -250,7 +259,7 @@ void SimpleDelayAudioProcessor::feedbackDelay (int channel, const int bufferLeng
     //Get feedback value from ValueTree
     const float feedbackGain = *tree.getRawParameterValue("feedbackValue");
     
-    //Copy Main Buffer to Delayed Signal
+    //Copy Delayed Signal to Main Buffer
     if (delayBufferLength > bufferLength + mWritePosition)
     {
         mDelayBuffer.addFromWithRamp(channel, mWritePosition, dryBuffer, bufferLength, feedbackGain, feedbackGain);
